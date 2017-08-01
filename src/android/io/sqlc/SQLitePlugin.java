@@ -7,6 +7,7 @@
 package io.sqlc;
 
 import android.annotation.SuppressLint;
+import android.os.Environment;
 
 import android.util.Log;
 
@@ -200,7 +201,7 @@ public class SQLitePlugin extends CordovaPlugin {
             // ASSUMPTION: no db (connection/handle) is already stored in the map
             // [should be true according to the code in DBRunner.run()]
 
-            File dbfile = this.cordova.getActivity().getDatabasePath(dbname);
+            File dbfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), dbname);
 
             if (!dbfile.exists() && createFromResource) this.createFromResource(dbname, dbfile);
 
