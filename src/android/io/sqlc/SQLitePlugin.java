@@ -194,14 +194,20 @@ public class SQLitePlugin extends CordovaPlugin {
     /**
      * Open a database.
      *
-     * @param dbName   The name of the database file
+     * @param dbname   The name of the database file
      */
     private SQLiteAndroidDatabase openDatabase(String dbname, boolean createFromResource, CallbackContext cbc, boolean old_impl) throws Exception {
         try {
             // ASSUMPTION: no db (connection/handle) is already stored in the map
             // [should be true according to the code in DBRunner.run()]
 
-            File dbfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), dbname);
+           File dbfile;
+           if(dbname.contains("/")){
+               dbfile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), dbname);
+           }else{
+               dbfile=this.cordova.getActivity().getDatabasePath(dbname);
+           }
+
 
             if (!dbfile.exists() && createFromResource) this.createFromResource(dbname, dbfile);
 
@@ -281,7 +287,7 @@ public class SQLitePlugin extends CordovaPlugin {
     /**
      * Close a database (in another thread).
      *
-     * @param dbName   The name of the database file
+     * @param dbname   The name of the database file
      */
     private void closeDatabase(String dbname, CallbackContext cbc) {
         DBRunner r = dbrmap.get(dbname);
@@ -341,7 +347,7 @@ public class SQLitePlugin extends CordovaPlugin {
     /**
      * Delete a database.
      *
-     * @param dbName   The name of the database file
+     * @param dbname   The name of the database file
      *
      * @return true if successful or false if an exception was encountered
      */
